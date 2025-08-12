@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>PDF 在线预览</title>
+    <style>
+        html, body { margin: 0; padding: 0; height: 100%; }
+        #viewer { width: 100%; height: 100%; overflow: auto; background: #ccc; }
+        canvas { display: block; margin: 0 auto; background: #fff; }
+    </style>
+</head>
+<body>
+<div id="viewer"></div>
+
+<script src="pdfjs/pdf.js"></script>
+<script>
+    // 设置 worker 文件路径
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
+
+    const url = 'document.pdf'; // 你的 PDF 路径
+
+    pdfjsLib.getDocument(url).promise.then(function(pdf) {
+        console.log('总页数: ' + pdf.numPages);
+
+        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            pdf.getPage(pageNum).then(function(page) {
+                const viewport = page.getViewport({ scale: 1.5 });
+                const canvas = document.createElement('canvas');
+                const context = canvas.getContext('2d');
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                document.getElementById('viewer').appendChild(canvas);
+                page.render({ canvasContext: context, viewport: viewport });
+            });
+        }
+    });
+</script>
+</body>
+</html>
