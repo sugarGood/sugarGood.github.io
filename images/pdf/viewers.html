@@ -1,56 +1,72 @@
+<!--<!DOCTYPE html>-->
+<!--<html>-->
+<!--<head>-->
+<!--    <meta charset="utf-8">-->
+<!--    <title>票据详情</title>-->
+<!--    <style>-->
+<!--        html, body { margin: 0; padding: 0; height: 100%; }-->
+<!--        #viewer { width: 100%; height: 100%; overflow: auto; background: #ccc; }-->
+<!--        canvas { display: block; margin: 0 auto; background: #fff; }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<div id="viewer"></div>-->
+
+<!--<script src="pdfjs/pdf.js"></script>-->
+<!--<script>-->
+<!--    // 设置 worker 文件路径-->
+<!--    pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';-->
+
+<!--    const url = 'document.pdf'; // 你的 PDF 路径-->
+
+<!--    pdfjsLib.getDocument(url).promise.then(function(pdf) {-->
+<!--        console.log('总页数: ' + pdf.numPages);-->
+
+<!--        for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {-->
+<!--            pdf.getPage(pageNum).then(function(page) {-->
+<!--                const viewport = page.getViewport({ scale: 1.5 });-->
+<!--                const canvas = document.createElement('canvas');-->
+<!--                const context = canvas.getContext('2d');-->
+<!--                canvas.height = viewport.height;-->
+<!--                canvas.width = viewport.width;-->
+<!--                document.getElementById('viewer').appendChild(canvas);-->
+<!--                page.render({ canvasContext: context, viewport: viewport });-->
+<!--            });-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>票税详情</title>
-<style>
-  html, body {
-    margin: 0; padding: 0; height: 100%; background: #ccc;
-  }
-  #viewer {
-    width: 100%; height: 100%;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* iOS流畅滚动 */
-  }
-  canvas {
-    display: block;
-    margin: 10px auto;
-    background: #fff;
-    box-shadow: 0 0 4px rgba(0,0,0,0.3);
-  }
-</style>
+    <meta charset="utf-8">
+    <title>票据详情</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background: #ccc;
+        }
+        #viewer {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+            background: #fff;
+        }
+    </style>
 </head>
 <body>
-<div id="viewer"></div>
-
-<script src="pdfjs/pdf.js"></script>
-<script>
-  const url = 'document.pdf'; // 确保与html同目录，避免iOS跨域问题
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
-
-  // 异步加载 PDF（逐页渲染）
-  pdfjsLib.getDocument(url).promise.then(function(pdf) {
-    let currentPage = 1;
-
-    function renderNextPage() {
-      if (currentPage > pdf.numPages) return;
-      pdf.getPage(currentPage).then(function(page) {
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-        document.getElementById('viewer').appendChild(canvas);
-        page.render({ canvasContext: context, viewport: viewport }).promise.then(function() {
-          currentPage++;
-          // 延迟加载下一页，防止iOS内存占用过高
-          setTimeout(renderNextPage, 200);
-        });
-      });
-    }
-
-    renderNextPage();
-  });
-</script>
+<div id="viewer">
+    <img src="img.png" alt="票据1">
+</div>
 </body>
 </html>
