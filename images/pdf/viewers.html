@@ -48,25 +48,37 @@
             margin: 0;
             padding: 0;
             height: 100%;
-            background: #ccc;
+            background: #000; /* 黑色背景让图片边缘更自然 */
         }
         #viewer {
             width: 100%;
             height: 100%;
-            overflow: auto;
-            text-align: center;
+            overflow-y: auto; /* 可以上下滚动 */
+            background: #000;
         }
         img {
-            max-width: 100%;
-            display: block;
-            margin: 0 auto;
-            background: #fff;
+            width: 100%;        /* 宽度占满屏幕 */
+            height: auto;       /* 按比例自适应 */
+            display: block;     /* 避免间隙 */
+            background: #fff;   /* 图片缺省背景 */
         }
     </style>
 </head>
 <body>
-<div id="viewer">
-    <img src="img.png" alt="票据1">
-</div>
+<div id="viewer"></div>
+
+<script>
+    // 图片数组（可以替换为你的路径）
+    const images = ['image1.jpg', 'image2.jpg', 'image3.jpg'];
+
+    const viewer = document.getElementById('viewer');
+    images.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = '票据';
+        viewer.appendChild(img);
+    });
+</script>
 </body>
 </html>
+
