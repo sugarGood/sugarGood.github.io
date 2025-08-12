@@ -3,11 +3,21 @@
 <head>
 <meta charset="utf-8">
 <title>票税详情</title>
-<link rel="stylesheet" href="pdfjs/viewer.css">
 <style>
-  html, body { margin: 0; padding: 0; height: 100%; }
-  #viewer { width: 100%; height: 100%; overflow: auto; background: #ccc; }
-  canvas { display: block; margin: 0 auto; background: #fff; }
+  html, body {
+    margin: 0; padding: 0; height: 100%; background: #ccc;
+  }
+  #viewer {
+    width: 100%; height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* iOS流畅滚动 */
+  }
+  canvas {
+    display: block;
+    margin: 10px auto;
+    background: #fff;
+    box-shadow: 0 0 4px rgba(0,0,0,0.3);
+  }
 </style>
 </head>
 <body>
@@ -15,24 +25,31 @@
 
 <script src="pdfjs/pdf.js"></script>
 <script>
-  const url = 'document.pdf'; // 你的 PDF 文件路径
-
-  // 设置 worker 文件路径
+  const url = 'document.pdf'; // 确保与html同目录，避免iOS跨域问题
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
 
-  // 异步加载 PDF
+  // 异步加载 PDF（逐页渲染）
   pdfjsLib.getDocument(url).promise.then(function(pdf) {
-    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-      pdf.getPage(pageNum).then(function(page) {
+    let currentPage = 1;
+
+    function renderNextPage() {
+      if (currentPage > pdf.numPages) return;
+      pdf.getPage(currentPage).then(function(page) {
         const viewport = page.getViewport({ scale: 1.5 });
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         canvas.height = viewport.height;
         canvas.width = viewport.width;
         document.getElementById('viewer').appendChild(canvas);
-        page.render({ canvasContext: context, viewport: viewport });
+        page.render({ canvasContext: context, viewport: viewport }).promise.then(function() {
+          currentPage++;
+          // 延迟加载下一页，防止iOS内存占用过高
+          setTimeout(renderNextPage, 200);
+        });
       });
     }
+
+    renderNextPage();
   });
 </script>
 </body>
