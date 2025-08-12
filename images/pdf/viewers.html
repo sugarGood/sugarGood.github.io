@@ -1,125 +1,27 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>票据详情</title>
     <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            background: #f5f5f5;
-            font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", Helvetica, Arial, sans-serif;
-        }
-        #viewer {
-            background: #ccc;
-            padding: 10px 0;
-            text-align: center;
-        }
-        canvas {
-            display: block;
-            margin: 0 auto;
-            background: #fff;
-        }
-        /* 下半部分容器 */
-        .ticket-info {
-            background: #fff;
-            padding: 16px;
-            border-top: 1px solid #e5e5e5;
-        }
-        .ticket-info h2 {
-            font-size: 15px;
-            font-weight: 500;
-            color: #333;
-            margin: 0 0 12px 0;
-            line-height: 1.4;
-            border-left: 4px solid #4caf50;
-            padding-left: 8px;
-        }
-        .ticket-info table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 16px;
-        }
-        .ticket-info table td {
-            padding: 6px 0;
-            font-size: 14px;
-            line-height: 1.5;
-        }
-        .ticket-info table td.label {
-            color: #999;
-            width: 80px;
-        }
-        .ticket-info table td.value {
-            color: #333;
-        }
-        .ticket-buttons {
-            display: flex;
-            gap: 12px;
-        }
-        .ticket-buttons button {
-            flex: 1;
-            padding: 10px 0;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            color: #fff;
-        }
-        .btn-view {
-            background-color: #4caf50;
-        }
-        .btn-download {
-            background-color: #2196f3;
-        }
-        .ticket-tip {
-            background: #fff;
-            margin-top: 10px;
-            padding: 12px 16px;
-            font-size: 12px;
-            color: #999;
-            line-height: 1.6;
-        }
+        html, body { margin: 0; padding: 0; height: 100%; }
+        #viewer { width: 100%; height: 100%; overflow: auto; background: #ccc; }
+        canvas { display: block; margin: 0 auto; background: #fff; }
     </style>
 </head>
 <body>
-
-<!-- 上半部分 PDF -->
 <div id="viewer"></div>
 
-<!-- 下半部分票据信息 -->
-<div class="ticket-info">
-    <h2>票据信息</h2>
-    <table>
-        <tr>
-            <td class="label">开票日期</td>
-            <td class="value">2025-08-12</td>
-        </tr>
-        <tr>
-            <td class="label">缴款人</td>
-            <td class="value">张三</td>
-        </tr>
-        <tr>
-            <td class="label">金额合计</td>
-            <td class="value">￥1,000.00</td>
-        </tr>
-    </table>
-    <div class="ticket-buttons">
-        <button class="btn-view">查询明细</button>
-        <button class="btn-download">下载发票</button>
-    </div>
-</div>
-
-<div class="ticket-tip">
-    特别提示：本页面仅供查看电子票据内容，如有疑问请联系开票单位。
-</div>
-
-<!-- PDF.js 逻辑 -->
 <script src="pdfjs/pdf.js"></script>
 <script>
+    // 设置 worker 文件路径
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'pdfjs/pdf.worker.js';
-    const url = 'document.pdf';
+
+    const url = 'document.pdf'; // 你的 PDF 路径
+
     pdfjsLib.getDocument(url).promise.then(function(pdf) {
+        console.log('总页数: ' + pdf.numPages);
+
         for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
             pdf.getPage(pageNum).then(function(page) {
                 const viewport = page.getViewport({ scale: 1.5 });
@@ -133,6 +35,5 @@
         }
     });
 </script>
-
 </body>
 </html>
